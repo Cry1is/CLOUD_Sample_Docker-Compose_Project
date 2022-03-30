@@ -18,8 +18,24 @@ router.get("/", async (req, res, next) => {
 // POST /schools/
 // Adds a new school to the database. Requires an admin role.
 router.post("/", async (req, res, next) => {
-    // TODO
-    res.status(404).send();
+    let school_name = req.body.school_name;
+    let school_location = req.body.school_location;
+
+    if((school_name === undefined) || (school_location === undefined)){
+        res.status(400).send();
+        return;
+    }
+
+    // Insert new school into DB
+    try {
+        await pool.execute('INSERT INTO `school`(school_name, school_location) VALUES (?, ?)',
+            [school_name, school_location]);
+    } catch (error) {
+        return next(error);
+    }
+
+
+    res.status(200).send();
 });
 
 
