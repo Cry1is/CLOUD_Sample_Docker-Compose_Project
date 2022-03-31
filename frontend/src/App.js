@@ -6,8 +6,8 @@ import { LoginPage } from './Components/Login/LoginPage';
 // import { Route } from reactDom;
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Base } from './Components/BaseView/Base';
-import { SignUpPage } from './Components/Login/SignUpPage';
-import { Profile } from './Components/Profiles/Profile';
+import SignUpPage from './Components/Login/SignUpPage';
+import Profile from './Components/Profiles/Profile';
 
 // React functional component
 function App() {
@@ -105,7 +105,7 @@ function App() {
           
           
           <Route path='/signUp' element={<SignUpPage />} />
-          <Route path="/users/:id" element={<Profile />} />
+          <Route path="/users/wes" element={<Profile />} />
         </Routes>
       </BrowserRouter>
 
