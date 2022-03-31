@@ -12,6 +12,7 @@ export default class Profile extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {};
         this.state.loadedUser = "wes"
         this.state.editMode = false;
 
