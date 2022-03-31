@@ -1,30 +1,52 @@
-import { getEmailbyUsername, getFirstNamebyUsername, getLastNamebyUsername, updateAccount} from "../APIFolder/loginApi";
+import { getEmailbyUsername, getFirstNamebyUsername, getLastNamebyUsername, updateAccount } from "../../APIFolder/loginApi";
 import { TextField } from "../common";
-import { useState } from "react";
+import React, { useState } from "react";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-
-export const Profile = () => {
-
-    const navigate = useNavigate();
-    const loadedUser = "wes"
-    let editMode = false;
-
-    //Doesn't currently know what info to get from the database
-    const [firstName, setFirstName] = useState(getFirstNamebyUsername(username));
-    const [lastName, setLastName] = useState(getLastNamebyUsername(username));
-    const [email, setEmail] = useState(getEmailbyUsername(username));
-    const username = Cookies.get("username");
+import { render } from "react-dom";
 
 
-    const startEditing = () => {
-        editMode = true;
-        navigate(`/${username}`)
+
+
+export default class Profile extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state.loadedUser = "wes"
+        this.state.editMode = false;
+
+
+        //Doesn't currently know what info to get from the database
+        this.state.firstName = '';
+        this.state.lastName = '';
+        this.state.email = '';
+        this.state.username = Cookies.get("username");
     }
-    const doneEditing = () => {
-        editMode = false;
-        updateAccount({"username": username,"firstName": firstName, "lastName": lastName, "email": email});
-        navigate(`/${username}`)
+
+
+    componentDidMount() {
+        // this.state.firstName = getFirstNamebyUsername(this.state.username);
+        // this.state.lastName = getLastNamebyUsername(this.state.username);
+        // this.state.email = getEmailbyUsername(this.state.username);
+    }
+
+
+
+    startEditing(){
+        this.state.editMode = true;
+        // navigate(`/${username}`)
+        this.render();
+    }
+    doneEditing(){
+        this.state.editMode = false;
+        updateAccount({ "username": this.state.username, "firstName": this.state.firstName, "lastName": this.state.lastName, "email": this.state.email });
+        // navigate(`/${username}`)
+        this.render();
+    }
+
+    handleChange(e) {
+        // handle state changes
+        this.setState({ value: e.target.value });
     }
 
 
@@ -34,44 +56,45 @@ export const Profile = () => {
 
     // NOTE - IN FUTURE ADD BUTTON TO SEND FRIEND REQUEST...ONLY IF FUNCTIONALITY IS IMPLEMENTED
 
-    if(username === loadedUser){//Need to get loadedUser from somewhere, probably button click to get into profile
-        if(editMode)
-        {
-            
-            return <section className="userProfile">
-                <h1>{loadedUser}'s Profile</h1>
-                <TextField label="First Name :" value={firstName} setValue={setFirstName} />
-                <TextField label="Last Name :" value={lastName} setValue={setLastName}/>
-                <TextField label="Email :" value={email} setValue={setEmail} />
-                <button onClick={doneEditing()}>Save</button>
-            </section>
-        }
-        else{
 
+    render() {
+        // return <h1>Hello</h1>
+        if (this.state.username === this.state.loadedUser) {//Need to get loadedUser from somewhere, probably button click to get into profile
+            if (this.state.editMode) {
+
+                return <section className="userProfile">
+                    <h1>{this.state.loadedUser}'s Profile</h1>
+                    <TextField label="First Name :" value={this.state.firstName} setValue={e => this.handleChange(e)} />
+                    <TextField label="Last Name :" value={this.state.lastName} setValue={e => this.handleChange(e)} />
+                    <TextField label="Email :" value={this.state.email} setValue={e => this.handleChange(e)} />
+                    <button onClick={this.doneEditing()}>Save</button>
+                </section>
+            }
+            else {
+
+                return <section className="userProfile">
+                    <h1>{this.state.loadedUser}'s Profile</h1>
+                    <h2>First Name :</h2>
+                    <p>{this.state.firstName}</p>
+                    <h2>Last Name :</h2>
+                    <p>{this.state.lastName}</p>
+                    <h2>Email :</h2>
+                    <p>{this.state.email}</p>
+                    <button onClick={this.startEditing()}>Edit Profile</button>
+                </section>
+            }
+        }
+        else {
             return <section className="userProfile">
-                <h1>{loadedUser}'s Profile</h1>
+                <h1>{this.state.loadedUser}'s Profile</h1>
                 <h2>First Name :</h2>
-                <p>{firstName}</p>
+                <p>{this.state.firstName}</p>
                 <h2>Last Name :</h2>
-                <p>{lastName}</p>
+                <p>{this.state.lastName}</p>
                 <h2>Email :</h2>
-                <p>{email}</p>
-                <button onClick={startEditing()}>Edit Profile</button>
+                <p>{this.state.email}</p>
             </section>
         }
     }
-    else
-    {
-        return <section className="userProfile">
-                <h1>{loadedUser}'s Profile</h1>
-                <h2>First Name :</h2>
-                <p>{firstName}</p>
-                <h2>Last Name :</h2>
-                <p>{lastName}</p>
-                <h2>Email :</h2>
-                <p>{email}</p>
-            </section>
-    }
-
 
 }
