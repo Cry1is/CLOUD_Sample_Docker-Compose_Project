@@ -34,19 +34,20 @@ function App() {
         .then(account => {
           if (account) {
             setCurrUser(account);
+            localStorage.currUser = account;
           }
           else {
             console.log("User is null after request");
-            setCurrUser('');
+            setCurrUser(undefined);
           }
         })
     }
     else {
-      setCurrUser('');
+      setCurrUser(undefined);
     }
   }, [])
 
-  const [currUser, setCurrUser] = useState('')
+  const [currUser, setCurrUser] = useState(undefined)
 
   //Nav bar now made available from all views (at least thats the goal)
   const [loggedInPages] = useState([

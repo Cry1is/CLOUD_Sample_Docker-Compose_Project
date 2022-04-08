@@ -1,85 +1,76 @@
-import { getAccountbyUsername, getStatusByUsername, logout, updateAccountbyUsername } from "../../APIFolder/loginApi";
-import { TextField } from "../common";
+// library imports
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
-import LoggedInResponsiveAppBar from "../common/LoggedInResponsiveAppBar";
+import Cookies from "js-cookie";
 import CircleIcon from '@mui/icons-material/Circle';
 
-export const Profile = ({ currUser, setCurrUser, pages, settings }) => {
+// method imports
+import { get, put, logout, updateAccountbyUsername, getAccountbyUsername } from "../../APIFolder/loginApi";
 
-    const location = useLocation();
+// models
+import { TextField } from "../common";
+import LoggedInResponsiveAppBar from "../common/LoggedInResponsiveAppBar";
+
+// currUser, setCurrUser, pages, settings
+export const Profile = (props) => {
     const navigate = useNavigate();
     const [editMode, setEditMode] = useState(false);
 
     //Doesn't currently know what info to get from the database
-    const [account, setAccount] = useState('')
     const [loadedProfile, setLoadedProfile] = useState('')
     const [online, setOnline] = useState('')
 
     // const username = Cookies.get("username");
 
     useEffect(() => {
-        getAccountbyUsername(location.pathname.substring(7, location.pathname.length)).then(response => setLoadedProfile(response))
+        // if the user exists in localStorage, get the user. 
+        if (localStorage.currUser)
+            getAccountbyUsername(JSON.parse(localStorage.currUser).username).then(res => setLoadedProfile(res));
+        else {
+            window.alert("Please sign in to view profiles");
+            navigate('/');
+        }
     }, [editMode]);
 
     if (!loadedProfile) {
         // get the account from the username
         return <>Loading...</>
     }
+
     const startEditing = () => {
-        changeAccount({...currUser});
+        changeAccount({...JSON.parse(localStorage.currUser)});
         setEditMode(true);
     }
+
     const doneEditing = () => {
-        
-        if (account.firstName && account.lastName) {
-            updateAccountbyUsername(account).then(setEditMode(false));
+        var currUser = JSON.parse(localStorage.currUser);
+        if (currUser.firstName && currUser.lastName) {
+            updateAccountbyUsername(currUser).then(setEditMode(false));
         }
         else {
             window.alert("Please fill out both fields");
         }
     }
+
     const cancel = () => {
         setEditMode(false);
     }
+
     const signOut = () => {
         console.log("Logging out");
-        logout().then(() => setCurrUser(''));
+        logout().then(() => localStorage.currUser = undefined);
     }
+
     const profileNav = () => {
-        navigate(`users/${currUser.username}`);
+        navigate(`users/${JSON.parse(localStorage.currUser).username}`);
     }
+
     const accountNav = () => {
-        navigate(`accounts/${currUser.username}`);
-    }
-
-    if (!currUser) {
-        let username = Cookies.get("username");
-
-        if (username) {
-            getAccountbyUsername(username)
-                .then(account => {
-                    if (account) {
-                        setCurrUser(account);
-                    }
-                    else {
-                        console.log("User is null after request");
-                        setCurrUser('');
-                    }
-                });
-            getStatusByUsername(username).then(status => setOnline(status));
-        }
-        else {
-            setCurrUser('');
-            window.alert("Please sign in to view profiles");
-            navigate('/');
-        }
-
+        navigate(`accounts/${JSON.parse(localStorage.currUser).username}`);
     }
 
 
-    const changeAccount = delta => setAccount({ ...account, ...delta });
+    const changeAccount = delta => setLoadedProfile({ ...loadedProfile, ...delta });
     // Basically check if user is the same user as the loaded profile.
     // If so then allow them to edit with the edit button at the end (this edit button will update the database once done)
     // If not then display the profile without the edit buttons.
@@ -88,15 +79,15 @@ export const Profile = ({ currUser, setCurrUser, pages, settings }) => {
 
     return <section className="userProfile">
         <LoggedInResponsiveAppBar
-            pages={pages}
-            settings={settings}
+            pages={props.pages}
+            settings={props.settings}
             signOut={() => signOut()}
-            username={currUser.username}
+            username={JSON.parse(localStorage.currUser).username}
             profileNav={() => profileNav()}
             account={() => accountNav()} />
 
         {/* Viewing own profile (EDITING) */}
-        {currUser.username === loadedProfile.username && editMode === true &&
+        {JSON.parse(localStorage.currUser).username === loadedProfile.username && editMode === true &&
             <div className="container border-0 mt-5">
                 <div className="row bg-light">
                     <img src="https://via.placeholder.com/300x300" className="float-start col-2 m-3 m-5" alt="" />
@@ -113,13 +104,13 @@ export const Profile = ({ currUser, setCurrUser, pages, settings }) => {
                             <tbody>
                                 <tr className="border-0">
                                     <td className="col-3 fs-6 text-start border-0">
-                                        <TextField label="First Name :" value={account.firstName} setValue={firstName => changeAccount({firstName})} />
+                                        <TextField label="First Name :" value={loadedProfile.firstName} setValue={firstName => changeAccount({firstName})} />
                                     </td>
                                 </tr>
                                 <tr className="border-0">
                                     <td className="col-3 fs-6 text-start border-0">
 
-                                        <TextField label="Last Name :" value={account.lastName} setValue={lastName => changeAccount({lastName})} />
+                                        <TextField label="Last Name :" value={loadedProfile.lastName} setValue={lastName => changeAccount({lastName})} />
                                     </td>
                                 </tr>
                                 {/* <tr>
@@ -142,7 +133,7 @@ export const Profile = ({ currUser, setCurrUser, pages, settings }) => {
             </div>}
 
         {/* Viewing own profile (NOT EDITING) */}
-        {currUser.username === loadedProfile.username && editMode === false &&
+        {JSON.parse(localStorage.currUser).username === loadedProfile.username && editMode === false &&
             <div className="container border-0 mt-5">
                 <div className="row bg-light">
                     <img src="https://via.placeholder.com/300x300" className="float-start col-2 m-3 m-5" alt="" />
@@ -169,7 +160,7 @@ export const Profile = ({ currUser, setCurrUser, pages, settings }) => {
             </div>}
 
         {/* Viewing profile besides your own */}
-        {currUser.username !== loadedProfile.username &&
+        {localStorage.currUser.username !== loadedProfile.username &&
             <div className="container border-0 mt-5">
                 <div className="row bg-light">
                     <img src="https://via.placeholder.com/300x300" className="float-start col-2 m-3 m-5" alt="" />

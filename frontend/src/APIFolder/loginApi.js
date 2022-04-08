@@ -31,6 +31,30 @@ export const logout = async () => {
     }
 }
 
+// Takes advantage of the backend's dynamic get method
+export const get = async (table, variable, value) => {
+    if (!table)
+        return null;
+
+    const res = await axios.get(`http://localhost:8000/api/d/${table}/${variable}/${value}`);
+    if (res.status !== 200) {
+        console.log(`Could not get from ${table} given a value of ${value} for ${variable}`);
+        return null;
+    }
+    return res.data;
+}
+
+export const put = async (table, variable, body) => {
+    if (!table)
+        return;
+
+    const res = await axios.put(`http://localhost:8000/api/d/${table}/${variable}/put`, body);
+    if (res.status !== 200) {
+        console.log(`Could not put to ${table} for ${variable} and a body of ${body}`);
+        return;
+    }
+}
+
 export const getAccountbyUsername = async (username) => {
     if(username === undefined || username === null){
         return null;

@@ -13,7 +13,7 @@ export const LoginPage = ({ currUser, setCurrUser }) => {
             getAccountbyUsername(response.username)
                 .then(user => user && setCurrUser(user))
                 .then(() => navigate('/'));
-
+            localStorage.currUser = JSON.stringify(currUser)
         } else {
             window.alert("Password for given username is incorrect");
         };
