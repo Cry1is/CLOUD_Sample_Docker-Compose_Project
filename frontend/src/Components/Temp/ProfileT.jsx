@@ -5,7 +5,7 @@ import { getAccountbyUsername, logout, updateAccountbyUsername } from "../../API
 
 // Component Imports
 import { TextField } from "../common";
-import LoggedInResponsiveAppBar from "../common/LoggedInResponsiveAppBar";
+import LoggedInResponsiveApBar from "../common/LoggedInResponsiveAppBar";
 
 // Method Imports
 
@@ -16,6 +16,7 @@ export const Profile = (props) => {
     // Component Variables
     const [account, setAccount] = useState(undefined);
     const [editMode, setEditMode] = useState(false);
+    const [online, setONline] = useState(false);
 
     // Initial Load
     useEffect(() => {

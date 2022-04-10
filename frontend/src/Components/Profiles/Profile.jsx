@@ -1,100 +1,87 @@
-// library imports
+// Library Imports
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 import CircleIcon from '@mui/icons-material/Circle';
 
-// method imports
-import { get, put, logout, updateAccountbyUsername, getAccountbyUsername } from "../../APIFolder/loginApi";
-
-// models
+// Component Imports
 import { TextField } from "../common";
 import LoggedInResponsiveAppBar from "../common/LoggedInResponsiveAppBar";
 
-// currUser, setCurrUser, pages, settings
+// Method Imports
+import { getAccountbyUsername, logout, updateAccountbyUsername } from "../../APIFolder/loginApi";
+
 export const Profile = (props) => {
+    // Navigate Object
     const navigate = useNavigate();
+    
+    // Component Variables
+    const [account, setAccount] = useState(undefined);
     const [editMode, setEditMode] = useState(false);
+    const [online, setOnline] = useState(false);
 
-    //Doesn't currently know what info to get from the database
-    const [loadedProfile, setLoadedProfile] = useState('')
-    const [online, setOnline] = useState('')
-
-    // const username = Cookies.get("username");
-
+    // Initial Load
     useEffect(() => {
-        // if the user exists in localStorage, get the user. 
-        if (localStorage.currUser)
-            getAccountbyUsername(JSON.parse(localStorage.currUser).username).then(res => setLoadedProfile(res));
-        else {
+        if (!localStorage.currUser) {
             window.alert("Please sign in to view profiles");
             navigate('/');
         }
+        else {
+            // grab the currUser from localStorage
+            var temp = JSON.parse(JSON.stringify(localStorage.currUser));
+
+            // initalize the account variable
+            getAccountbyUsername(temp.username).then(res => setAccount(res));
+        }
     }, [editMode]);
 
-    if (!loadedProfile) {
-        // get the account from the username
+    // Conditions
+    if (!account)
         return <>Loading...</>
-    }
 
+    // Component Methods
     const startEditing = () => {
-        changeAccount({...JSON.parse(localStorage.currUser)});
-        setEditMode(true);
+        changeAccount({...account});
     }
-
     const doneEditing = () => {
-        var currUser = JSON.parse(localStorage.currUser);
-        if (currUser.firstName && currUser.lastName) {
-            updateAccountbyUsername(currUser).then(setEditMode(false));
-        }
-        else {
-            window.alert("Please fill out both fields");
+        if (account.firstName && account.lastName) {
+            updateAccountbyUsername(account).then(setEditMode(false));
+            localStorage.currUser = JSON.stringify(account);
         }
     }
-
     const cancel = () => {
         setEditMode(false);
     }
-
     const signOut = () => {
         console.log("Logging out");
         logout().then(() => localStorage.currUser = undefined);
     }
-
     const profileNav = () => {
-        navigate(`users/${JSON.parse(localStorage.currUser).username}`);
+        navigate(`users/${account.username}`);
     }
-
     const accountNav = () => {
-        navigate(`accounts/${JSON.parse(localStorage.currUser).username}`);
+        navigate(`acccounts/${account.username}`);
     }
+    const changeAccount = delta => setAccount({ ...account, ...delta });
 
-
-    const changeAccount = delta => setLoadedProfile({ ...loadedProfile, ...delta });
-    // Basically check if user is the same user as the loaded profile.
-    // If so then allow them to edit with the edit button at the end (this edit button will update the database once done)
-    // If not then display the profile without the edit buttons.
-
-    // NOTE - IN FUTURE ADD BUTTON TO SEND FRIEND REQUEST...ONLY IF FUNCTIONALITY IS IMPLEMENTED
-
+    // HTML
     return <section className="userProfile">
         <LoggedInResponsiveAppBar
             pages={props.pages}
             settings={props.settings}
-            signOut={() => signOut()}
-            username={JSON.parse(localStorage.currUser).username}
-            profileNav={() => profileNav()}
-            account={() => accountNav()} />
+            signOut={()=>signOut()}
+            username={JSON.parse(JSON.stringify(localStorage.currUser)).username}
+            profileNav={()=>profileNav()}
+            account={()=>accountNav()} />
 
         {/* Viewing own profile (EDITING) */}
-        {JSON.parse(localStorage.currUser).username === loadedProfile.username && editMode === true &&
+        {JSON.parse(JSON.stringify(localStorage.currUser)).username === account.username && editMode === true &&
             <div className="container border-0 mt-5">
                 <div className="row bg-light">
                     <img src="https://via.placeholder.com/300x300" className="float-start col-2 m-3 m-5" alt="" />
                     <div className="col-9 float-start mt-5">
                         <table className='table float-start'>
                             <thead>
-                                <th className="col-3 fs-3 mt-5 text-start">{loadedProfile.username}</th>
+                                <th className="col-3 fs-3 mt-5 text-start">{account.username}</th>
                                 {online && <th className="col-1"><CircleIcon sx={{background:'green'}} /></th>}
                                 {!online && <th className="col-1"><CircleIcon sx={{background:'red'}} /></th>}
                                 <th className="col-1">
@@ -104,13 +91,13 @@ export const Profile = (props) => {
                             <tbody>
                                 <tr className="border-0">
                                     <td className="col-3 fs-6 text-start border-0">
-                                        <TextField label="First Name :" value={loadedProfile.firstName} setValue={firstName => changeAccount({firstName})} />
+                                        <TextField label="First Name :" value={account.firstName} setValue={firstName => changeAccount({firstName})} />
                                     </td>
                                 </tr>
                                 <tr className="border-0">
                                     <td className="col-3 fs-6 text-start border-0">
 
-                                        <TextField label="Last Name :" value={loadedProfile.lastName} setValue={lastName => changeAccount({lastName})} />
+                                        <TextField label="Last Name :" value={account.lastName} setValue={lastName => changeAccount({lastName})} />
                                     </td>
                                 </tr>
                                 {/* <tr>
@@ -133,14 +120,14 @@ export const Profile = (props) => {
             </div>}
 
         {/* Viewing own profile (NOT EDITING) */}
-        {JSON.parse(localStorage.currUser).username === loadedProfile.username && editMode === false &&
+        {JSON.parse(JSON.stringify(localStorage.currUser)).username === account.username && editMode === false &&
             <div className="container border-0 mt-5">
                 <div className="row bg-light">
                     <img src="https://via.placeholder.com/300x300" className="float-start col-2 m-3 m-5" alt="" />
                     <div className="col-9 float-start mt-5">
                         <table className='table float-start'>
                             <thead>
-                                <th className="col-3 fs-3 mt-5 text-start">{loadedProfile.username}</th>
+                                <th className="col-3 fs-3 mt-5 text-start">{account.username}</th>
                                 {online && <th className="col-1"><CircleIcon sx={{background:'green'}} /></th>}
                                 {!online && <th className="col-1"><CircleIcon sx={{background:'red'}} /></th>}
                                 <th className="col-1">
@@ -149,7 +136,7 @@ export const Profile = (props) => {
                             </thead>
                             <tbody>
                                 <td className="col-3 fs-6 text-start">
-                                    <span className="p-0 text-capitalize">{loadedProfile.firstName} </span><span className="p-0 text-capitalize" >{loadedProfile.lastName}</span>
+                                    <span className="p-0 text-capitalize">{account.firstName} </span><span className="p-0 text-capitalize" >{account.lastName}</span>
                                 </td>
                                 {/* <h2>Email :</h2>
                             <p>{account.email}</p> */}
@@ -160,20 +147,20 @@ export const Profile = (props) => {
             </div>}
 
         {/* Viewing profile besides your own */}
-        {localStorage.currUser.username !== loadedProfile.username &&
+        {JSON.parse(JSON.stringify(localStorage.currUser)).username !== account.username &&
             <div className="container border-0 mt-5">
                 <div className="row bg-light">
                     <img src="https://via.placeholder.com/300x300" className="float-start col-2 m-3 m-5" alt="" />
                     <div className="col-9 float-start mt-5">
                         <table className='table float-start'>
                             <thead>
-                                <th className="col-3 fs-3 mt-5 text-start">{loadedProfile.username}</th>
+                                <th className="col-3 fs-3 mt-5 text-start">{account.username}</th>
                                 {online && <th className="col-1"><CircleIcon sx={{background:'green'}} /></th>}
                                 {!online && <th className="col-1"><CircleIcon sx={{background:'red'}} /></th>}
                             </thead>
                             <tbody>
                                 <td className="col-3 fs-6 text-start">
-                                    <span className="p-0 text-capitalize">{loadedProfile.firstName} </span><span className="p-0 text-capitalize" >{loadedProfile.lastName}</span>
+                                    <span className="p-0 text-capitalize">{account.firstName} </span><span className="p-0 text-capitalize" >{account.lastName}</span>
                                 </td>
                                 {/* <h2>Email :</h2>
                         <p>{account.email}</p> */}

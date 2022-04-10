@@ -1,35 +1,54 @@
-import { PasswordField, TextField } from "../common";
-import { useState } from "react";
-import { GenericButton } from "../common/GenericButton";
+// Library Imports
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
+
+// Component Imports
+import { PasswordField, TextField } from "../common";
+import { GenericButton } from "../common/GenericButton"
+
+// Method Imports
 import { getAccountbyUsername, logIntoAccount } from "../../APIFolder/loginApi";
 
-
-export const LoginPage = ({ currUser, setCurrUser }) => {
+export const LoginPage = (props) => {
+    // Navigate Object
     const navigate = useNavigate();
-    const checkIfLoginSucc = (response) => {
-        if (response.success === 1) {
-            getAccountbyUsername(response.username)
-                .then(user => user && setCurrUser(user))
-                .then(() => navigate('/'));
-            localStorage.currUser = JSON.stringify(currUser)
-        } else {
-            window.alert("Password for given username is incorrect");
+
+    // Component Variables
+    const [account, setAccount] = useState(undefined);
+    const [username, setUsername] = useState(undefined);
+    const [password, setPassword] = useState(undefined);
+
+    // Initial Load
+    useEffect(() => {
+        if (localStorage.currUser)
+            navigate('/');
+    });
+
+    // Conditions
+
+    // Component Methods
+    const login = () => {
+        var credentials = {
+            "username": username,
+            "password": password
         };
+        logIntoAccount(credentials).then(res => checkIfLoginSucc(res)).catch();
+    }
+    const checkIfLoginSucc = (res) => {
+        if (res.success !== 1) {
+            window.alert("Password or username is incorrect");
+        }
+        else {
+            getAccountbyUsername(res.username)
+                .then(x => setAccount(x))
+                .then(() => {
+                    localStorage.currUser = JSON.stringify(account);
+                    navigate('/')
+                });
+        }
     }
 
-    //will prevent someone from logging in if they are currently logged in
-    if (!currUser === '') {
-        navigate('/');
-    }
-
-    const login = (username, password) => {
-        logIntoAccount({ "username": username, "password": password }).then(response => checkIfLoginSucc(response)).catch();
-    }
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-
+    // HTML
     return <section id="loginView">
         <h1>Login</h1>
         <form className="container">
@@ -45,7 +64,7 @@ export const LoginPage = ({ currUser, setCurrUser }) => {
 
             <button
                 type="button"
-                onClick={() => login(username, password)}
+                onClick={() => login()}
                 variant="contained"
                 color="success">
                 Login
@@ -54,6 +73,5 @@ export const LoginPage = ({ currUser, setCurrUser }) => {
             <p className="mb-0">or</p>
             <GenericButton label="Sign Up" click="/signUp" />
         </form>
-
-    </section>;
+    </section>
 }

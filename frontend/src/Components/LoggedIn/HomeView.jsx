@@ -1,57 +1,62 @@
-//This is for when users first log in.
+// Library Imports
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { Link, useNavigate } from "react-router-dom";
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
+// Component Imports
 import { LoggedInResponsiveAppBar } from "../common/LoggedInResponsiveAppBar";
-import Cookies from "js-cookie";
-import { useState } from "react";
+
+// Method Imports
 import { getAccountbyUsername, logout } from "../../APIFolder/loginApi";
-import { useEffect } from "react";
 
-export const HomeView = ({ currUser, setCurrUser, pages, settings}) => {
-
+export const HomeView = (props) => {
+    // Navigate Object
     const navigate = useNavigate();
 
+    // Component Variables
     const [account, setAccount] = useState(undefined);
 
+    // Initial Load
     useEffect(() => {
-        if (currUser === undefined) {
+        console.log(JSON.parse(JSON.stringify(localStorage.currUser)));
+        if (!localStorage.currUser) {
+            window.alert("Sign in to view the home view");
             navigate('/');
         }
-    }, [currUser]);
+        else {
+            // grab the currUser from localStorage
+            var temp = JSON.parse(JSON.stringify(localStorage.currUser));
 
+            // initalize the account variable
+            getAccountbyUsername(temp.username).then(x => setAccount(x));
+        }
+    }, []);
+
+    // Conditions
     if (!account) {
-        setAccount(currUser);
-        // getAccountbyUsername(currUser).then(x => setAccount(x));
+        console.log(JSON.parse(JSON.stringify(localStorage.currUser)));
+        window.alert("Invalid currUser");
+        navigate('/');
     }
 
-    console.log(JSON.stringify(currUser));
-
-    localStorage.currUser = JSON.stringify(currUser);
-
-    console.log(JSON.parse(JSON.stringify(localStorage.currUser)));
-
+    // Component Methods
     const signOut = () => {
-        logout().then(() =>setCurrUser(undefined));
+        logout().then(() => localStorage.currUser = undefined);
     }
     const profileNav = () => {
-
-        navigate(`users/${currUser.username}`);
+        navigate(`users/${account.username}`);
     }
     const accountNav = () => {
-
-        navigate(`accounts/${currUser.username}`);
+        navigate(`accounts/${account.username}`);
     }
 
+    // HTML
     return <div>
-        <LoggedInResponsiveAppBar 
-            pages={pages} 
-            settings={settings} 
-            signOut={() => signOut()} 
-            username={currUser.username} 
-            profileNav={() => profileNav()} 
+        <LoggedInResponsiveAppBar
+            pages={props.pages}
+            settings={props.settings}
+            signOut={() => signOut()}
+            userName={account.username}
+            profileNav={() => profileNav()}
             account={() => accountNav()} />
-        {/* <h1 className="mb-4">Welcome {account.firstName}</h1> */}
     </div>
 }

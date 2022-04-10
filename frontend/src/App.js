@@ -34,18 +34,22 @@ function App() {
         .then(account => {
           if (account) {
             setCurrUser(account);
-            localStorage.currUser = account;
+            console.log(account);
+            localStorage.currUser = JSON.stringify(account);
           }
           else {
             console.log("User is null after request");
             setCurrUser(undefined);
+            localStorage.currUser = undefined;
           }
         })
     }
     else {
+      console.log("No cookie");
       setCurrUser(undefined);
+      localStorage.currUser = undefined;
     }
-  }, [])
+  });
 
   const [currUser, setCurrUser] = useState(undefined)
 
