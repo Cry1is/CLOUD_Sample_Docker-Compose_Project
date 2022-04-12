@@ -15,19 +15,19 @@ export const Profile = (props) => {
     const navigate = useNavigate();
     
     // Component Variables
-    const [account, setAccount] = useState(undefined);
+    const [account, setAccount] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [online, setOnline] = useState(false);
 
     // Initial Load
     useEffect(() => {
-        if (!localStorage.currUser) {
+        var temp = JSON.parse(JSON.stringify(localStorage.currUser));
+        if (!temp) {
             window.alert("Please sign in to view profiles");
             navigate('/');
         }
-        else {
-            // grab the currUser from localStorage
-            var temp = JSON.parse(JSON.stringify(localStorage.currUser));
+        else if (temp) {
+            console.log("Loading user...")
 
             // initalize the account variable
             getAccountbyUsername(temp.username).then(res => setAccount(res));
@@ -35,8 +35,9 @@ export const Profile = (props) => {
     }, [editMode]);
 
     // Conditions
-    if (!account)
+    if (account === null) {
         return <>Loading...</>
+    }
 
     // Component Methods
     const startEditing = () => {
@@ -53,13 +54,13 @@ export const Profile = (props) => {
     }
     const signOut = () => {
         console.log("Logging out");
-        logout().then(() => localStorage.currUser = undefined);
+        logout().then(() => localStorage.currUser = '');
     }
     const profileNav = () => {
         navigate(`users/${account.username}`);
     }
     const accountNav = () => {
-        navigate(`acccounts/${account.username}`);
+        navigate(`accounts/${account.username}`);
     }
     const changeAccount = delta => setAccount({ ...account, ...delta });
 

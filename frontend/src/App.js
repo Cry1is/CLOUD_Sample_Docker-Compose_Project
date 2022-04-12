@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import axios from 'axios';
-import { LoginPage } from './Components/Login/LoginPage';
-// import { LoggedIn } from './LoggedIn/LoggedIn';
-// import { Route } from reactDom;
+// Library Imports
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Base } from './Components/BaseView/Base';
-import { SignUpPage } from './Components/Login/SignUpPage';
-import { Profile } from './Components/Profiles/Profile';
-import { HomeView } from './Components/LoggedIn/HomeView';
-import { AccountInfo } from './Components/Profiles/AccountInfo';
 import Cookies from 'js-cookie';
-import { getAccountbyUsername } from './APIFolder/loginApi';
+
+// Component Imports
+import './App.css';
+import { SignUpPage } from './Components/Login/SignUpPage';
+import { LoginPage } from './Components/Login/LoginPage';
+import { Base } from './Components/BaseView/Base';
+import { HomeView } from './Components/LoggedIn/HomeView';
+import { Profile } from './Components/Profiles/Profile';
+import { AccountInfo } from './Components/Profiles/AccountInfo';
 import { UserSearch } from './Components/Profiles/UserSearch';
 import { FriendsList } from './Components/Profiles/FriendsList';
+
+// Method Imports
+import { getAccountbyUsername } from './APIFolder/loginApi';
 
 // React functional component
 function App() {
@@ -24,34 +26,31 @@ function App() {
   // USE localhost OR ec2_url ACCORDING TO ENVIRONMENT
   const url = ec2 ? ec2_url : 'localhost'
 
+  // initial load
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
 
-    let username = Cookies.get("username");
+    let username = /*Cookies.get("username");*/undefined;
 
     if (username) {
       getAccountbyUsername(username)
-        .then(account => {
-          if (account) {
-            setCurrUser(account);
-            console.log(account);
-            localStorage.currUser = JSON.stringify(account);
+        .then(x => {
+          if (x) {
+            console.log("account found");
+            console.log(x);
+            localStorage.currUser = JSON.stringify(x);
           }
           else {
             console.log("User is null after request");
-            setCurrUser(undefined);
-            localStorage.currUser = undefined;
+            localStorage.currUser = '';
           }
-        })
+        });
     }
     else {
       console.log("No cookie");
-      setCurrUser(undefined);
-      localStorage.currUser = undefined;
+      localStorage.currUser = '';
     }
-  });
-
-  const [currUser, setCurrUser] = useState(undefined)
+  }, []);
 
   //Nav bar now made available from all views (at least thats the goal)
   const [loggedInPages] = useState([
@@ -84,8 +83,7 @@ function App() {
           check what type of user when loading and return different based on which type user is...Seems decently simple to implement */}
 
           {/* TODO: Integrate Material UI */}
-          <Route path='/' element={<Base currUser={currUser}
-            setCurrUser={x => setCurrUser(x)}
+          <Route path='/' element={<Base 
             basePages={basePages}
             loggedInPages={loggedInPages}
             settings={settings} />} />
@@ -93,7 +91,7 @@ function App() {
           {/* TODO: MAKE HOME NOT ACCESSABLE IF USER IS NOT LOGGED IN */}
 
           {/* TODO: Make home page nicer and more professional. */}
-          <Route path='/login' element={<LoginPage currUser={currUser} setCurrUser={x => setCurrUser(x)} />} />
+          <Route path='/login' element={<LoginPage />} />
 
           {/* <Route path='/loggedIn' element={<LoggedIn />} /> */}
           {/* TODO: Classes tab */}
@@ -106,21 +104,17 @@ function App() {
           {/* TODO: Account Settings (Probably later on) */}
 
 
-          <Route path="/users/:username/friends" element={<FriendsList currUser={currUser} setCurrUser={setCurrUser}/>} />
+          <Route path="/users/:username/friends" element={<FriendsList />} />
 
           <Route path="/users" element={<UserSearch 
-            currUser={currUser} 
-            setCurrUser={setCurrUser} 
             pages={loggedInPages}
-            settings={settings}/>} />
+            settings={settings} />} />
 
-          <Route path='/signUp' element={<SignUpPage currUser={currUser} setCurrUser={x => setCurrUser(x)} />} />
+          <Route path='/signUp' element={<SignUpPage />} />
           <Route path="/users/:username" element={<Profile 
-            currUser={currUser} 
-            setCurrUser={x => setCurrUser(x)}
             pages={loggedInPages}
-            settings={settings}/>} />
-          <Route path="/accounts/:username" element={<AccountInfo currUser={currUser} setCurrUser={x => setCurrUser(x)} />} />
+            settings={settings} />} />
+          <Route path="/accounts/:username" element={<AccountInfo />} />
         </Routes>
       </BrowserRouter>
     </div>

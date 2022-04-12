@@ -14,13 +14,13 @@ export const LoginPage = (props) => {
     const navigate = useNavigate();
 
     // Component Variables
-    const [account, setAccount] = useState(undefined);
-    const [username, setUsername] = useState(undefined);
-    const [password, setPassword] = useState(undefined);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     // Initial Load
     useEffect(() => {
-        if (localStorage.currUser)
+        // this needs to be !== '' because an un-parsed localStorage data member that is not undefined or empty evaluates to NaN. 
+        if (localStorage.currUser !== '')
             navigate('/');
     });
 
@@ -40,10 +40,9 @@ export const LoginPage = (props) => {
         }
         else {
             getAccountbyUsername(res.username)
-                .then(x => setAccount(x))
-                .then(() => {
-                    localStorage.currUser = JSON.stringify(account);
-                    navigate('/')
+                .then(x => {
+                    localStorage.currUser = JSON.stringify(x);
+                    navigate('/');
                 });
         }
     }
