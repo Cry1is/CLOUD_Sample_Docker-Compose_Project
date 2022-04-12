@@ -19,6 +19,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 export const LoggedInResponsiveAppBar = ({ pages, settings, signOut, username, profileNav, accountNav }) => {
+  console.log(username);
   const location = useLocation();
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);

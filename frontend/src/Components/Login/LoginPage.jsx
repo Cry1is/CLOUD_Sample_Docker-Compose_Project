@@ -19,8 +19,7 @@ export const LoginPage = (props) => {
 
     // Initial Load
     useEffect(() => {
-        // this needs to be !== '' because an un-parsed localStorage data member that is not undefined or empty evaluates to NaN. 
-        if (localStorage.currUser !== '')
+        if (!!JSON.parse(JSON.stringify(localStorage.currUser)))
             navigate('/');
     });
 

@@ -246,7 +246,7 @@ router.get("/api/users/:username", async (req, res, next) => {
     }
 
     if(rows.length === 0){
-        res.status(404).send();
+        res.status(404);
         return;
     }
 
@@ -257,7 +257,7 @@ router.get("/api/users/:username", async (req, res, next) => {
         firstName: user.first_name,
         lastName: user.last_name,
         studentId: user.student_id
-    }).send();
+    });
 });
 
 router.get("/api/users/", async (req, res, next) => {

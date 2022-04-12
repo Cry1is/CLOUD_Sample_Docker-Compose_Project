@@ -15,38 +15,36 @@ export const Profile = (props) => {
     const navigate = useNavigate();
     
     // Component Variables
-    const [account, setAccount] = useState(null);
+    const [account, setAccount] = useState(JSON.parse(localStorage.getItem("currUser")));
     const [editMode, setEditMode] = useState(false);
     const [online, setOnline] = useState(false);
 
     // Initial Load
     useEffect(() => {
-        var temp = JSON.parse(JSON.stringify(localStorage.currUser));
-        if (!temp) {
+        console.log("Loading Profile...");
+        if (!localStorage.getItem("currUser")) {
             window.alert("Please sign in to view profiles");
             navigate('/');
         }
-        else if (temp) {
+        else {
             console.log("Loading user...")
 
             // initalize the account variable
-            getAccountbyUsername(temp.username).then(res => setAccount(res));
+            getAccountbyUsername(account.username).then(res => setAccount(res));
         }
     }, [editMode]);
 
     // Conditions
-    if (account === null) {
-        return <>Loading...</>
-    }
 
     // Component Methods
     const startEditing = () => {
+        setEditMode(true);
         changeAccount({...account});
     }
     const doneEditing = () => {
         if (account.firstName && account.lastName) {
             updateAccountbyUsername(account).then(setEditMode(false));
-            localStorage.currUser = JSON.stringify(account);
+            localStorage.setItem("currUser", JSON.stringify(account));
         }
     }
     const cancel = () => {
@@ -54,7 +52,7 @@ export const Profile = (props) => {
     }
     const signOut = () => {
         console.log("Logging out");
-        logout().then(() => localStorage.currUser = '');
+        logout().then(() => localStorage.setItem("currUser", ""));
     }
     const profileNav = () => {
         navigate(`users/${account.username}`);
@@ -70,12 +68,12 @@ export const Profile = (props) => {
             pages={props.pages}
             settings={props.settings}
             signOut={()=>signOut()}
-            username={JSON.parse(JSON.stringify(localStorage.currUser)).username}
+            username={account.username}
             profileNav={()=>profileNav()}
             account={()=>accountNav()} />
 
         {/* Viewing own profile (EDITING) */}
-        {JSON.parse(JSON.stringify(localStorage.currUser)).username === account.username && editMode === true &&
+        {JSON.parse(localStorage.getItem("currUser")).username === account.username && editMode === true &&
             <div className="container border-0 mt-5">
                 <div className="row bg-light">
                     <img src="https://via.placeholder.com/300x300" className="float-start col-2 m-3 m-5" alt="" />
@@ -121,7 +119,7 @@ export const Profile = (props) => {
             </div>}
 
         {/* Viewing own profile (NOT EDITING) */}
-        {JSON.parse(JSON.stringify(localStorage.currUser)).username === account.username && editMode === false &&
+        {JSON.parse(localStorage.getItem("currUser")).username === account.username && editMode === false &&
             <div className="container border-0 mt-5">
                 <div className="row bg-light">
                     <img src="https://via.placeholder.com/300x300" className="float-start col-2 m-3 m-5" alt="" />
@@ -148,7 +146,7 @@ export const Profile = (props) => {
             </div>}
 
         {/* Viewing profile besides your own */}
-        {JSON.parse(JSON.stringify(localStorage.currUser)).username !== account.username &&
+        {JSON.parse(localStorage.getItem("currUser")).username !== account.username &&
             <div className="container border-0 mt-5">
                 <div className="row bg-light">
                     <img src="https://via.placeholder.com/300x300" className="float-start col-2 m-3 m-5" alt="" />

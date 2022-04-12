@@ -1,5 +1,5 @@
 // Library Imports
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Component Imports
@@ -13,14 +13,13 @@ export const Base = (props) => {
     const navigate = useNavigate();
 
     // Component Variables
-    const [account, setAccount] = useState(null);
 
     // Initial Load
+    useEffect(() => {
+        console.log("Loading Base...");
+    }, [props.account])
 
     // Conditions
-    if (account === null) {
-        setAccount(JSON.parse(JSON.stringify(localStorage.currUser)));
-    }
 
     // Component Methods
     const onSignIn = () => {
@@ -35,7 +34,7 @@ export const Base = (props) => {
     // HTML
     return <section className="baseView">
         {/*if the user is not logged in*/}
-        {!account && <div>
+        {!localStorage.getItem("currUser") && <div>
             <BaseResponsiveAppBar pages={props.basePages}
             signIn={() => onSignIn()}
             signUp={() => onSignUp()} />
@@ -43,6 +42,6 @@ export const Base = (props) => {
             <h2 className="">This is the base page to be updated with logo and stuff</h2>
         </div>}
         {/*if the user is logged in*/}
-        {!!account && <HomeView {...props} />}
+        {!!localStorage.getItem("currUser") && <HomeView {...props} />}
     </section>
 }

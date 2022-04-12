@@ -13,27 +13,30 @@ export const HomeView = (props) => {
     const navigate = useNavigate();
 
     // Component Variables
+    const [account, setAccount] = useState(JSON.parse(localStorage.getItem("currUser")));
 
     // Initial Load
     useEffect(() => {
-        var temp = JSON.parse(JSON.stringify(localStorage.currUser));
-        if (!temp) {
+        console.log("Loading HomeView...");
+        if (!localStorage.getItem("currUser")) {
             window.alert("Sign in to view the home view");
             navigate('/');
         }
+        else
+            getAccountbyUsername(account.username).then(x => setAccount(x));
     }, []);
 
     // Conditions
 
     // Component Methods
     const signOut = () => {
-        logout().then(() => localStorage.currUser = '');
+        logout().then(() => localStorage.setItem("currUser", ""));
     }
     const profileNav = () => {
-        navigate(`users/${JSON.parse(JSON.stringify(localStorage.currUser)).username}`);
+        navigate(`users/${account.username}`);
     }
     const accountNav = () => {
-        navigate(`accounts/${JSON.parse(JSON.stringify(localStorage.currUser)).username}`);
+        navigate(`accounts/${account.username}`);
     }
 
     // HTML
@@ -42,8 +45,8 @@ export const HomeView = (props) => {
             pages={props.loggedInPages}
             settings={props.settings}
             signOut={() => signOut()}
-            userName={JSON.parse(JSON.stringify(localStorage.currUser)).username}
+            username={account.username}
             profileNav={() => profileNav()}
-            account={() => accountNav()} />
+            accountNav={() => accountNav()} />
     </div>
 }

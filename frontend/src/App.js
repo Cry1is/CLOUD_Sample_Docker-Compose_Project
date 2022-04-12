@@ -8,7 +8,6 @@ import './App.css';
 import { SignUpPage } from './Components/Login/SignUpPage';
 import { LoginPage } from './Components/Login/LoginPage';
 import { Base } from './Components/BaseView/Base';
-import { HomeView } from './Components/LoggedIn/HomeView';
 import { Profile } from './Components/Profiles/Profile';
 import { AccountInfo } from './Components/Profiles/AccountInfo';
 import { UserSearch } from './Components/Profiles/UserSearch';
@@ -26,29 +25,31 @@ function App() {
   // USE localhost OR ec2_url ACCORDING TO ENVIRONMENT
   const url = ec2 ? ec2_url : 'localhost'
 
+  const [account, setAccount] = useState(null);
+
   // initial load
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
 
-    let username = /*Cookies.get("username");*/undefined;
-
+    let username = Cookies.get("username");
     if (username) {
       getAccountbyUsername(username)
         .then(x => {
           if (x) {
             console.log("account found");
             console.log(x);
-            localStorage.currUser = JSON.stringify(x);
+            localStorage.setItem("currUser", JSON.stringify(x));
+            setAccount(x);
           }
           else {
             console.log("User is null after request");
-            localStorage.currUser = '';
+            localStorage.setItem("currUser", "");
           }
         });
     }
     else {
       console.log("No cookie");
-      localStorage.currUser = '';
+      localStorage.setItem("currUser", "");
     }
   }, []);
 
@@ -84,6 +85,7 @@ function App() {
 
           {/* TODO: Integrate Material UI */}
           <Route path='/' element={<Base 
+            account={account}
             basePages={basePages}
             loggedInPages={loggedInPages}
             settings={settings} />} />
