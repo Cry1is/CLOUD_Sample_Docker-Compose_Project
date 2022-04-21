@@ -93,7 +93,7 @@ CREATE TABLE `db`.`friend_requests` (
     FOREIGN KEY (`requested_id`) REFERENCES accounts(`account_id`)
 );
 
-
+-- ANNOUNCEMENT TABLE
 CREATE TABLE `db`.`announcements` (
     `announcement_id` SERIAL,
     `author_id` BIGINT UNSIGNED,
