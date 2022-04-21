@@ -135,6 +135,31 @@ CREATE TABLE 'db'.'requirements' (
     FOREIGN KEY ('course_id') REFERENCES courses('course_id')
 );
 
+-- STUDENT REQUIREMENTS TABLE
+CREATE TABLE 'db'.'student_requirements' (
+  'account_id' BIGINT UNSIGNED NOT NULL,
+  'university_requirements_id' BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY ('account_id', 'university_requirements_id'),
+  FOREIGN KEY ('account_id') REFERENCES accounts('account_id'),
+  FOREIGN KEY ('university_requirements_id') REFERENCES university_requirements('university_requirements_id')
+);
+-- UNIVERSITY REQUIREMENTS
+CREATE TABLE 'db'.'university_requirements'(
+    'school_id' BIGINT UNSIGNED NOT NULL,
+    'UC_DISC' bool,
+    'UC_PRW' bool,
+    'UC_KNW' bool,
+    'UC_Creativity_and_Aesthetics' bool,
+    'UC_Historical_Contexts' bool,
+    'UC_Language_and_Literature' bool,
+    'UC_Science_and_Engineering' bool,
+    'UC_Technology_and_Mathematics' bool,
+    'UC_Humanities_and_Fine_Arts' bool,
+    'UC_Natural_and_Applied_Sciences' bool,
+    'university_requirements_id' SERIAL,
+    PRIMARY KEY ('university_requirements_id'),
+    FOREIGN KEY('school_id') REFERENCES schools('school_id')
+);
 -- REQUIREMENTS CC TABLE
 CREATE TABLE 'db'.'requirements_cc'(
     'requirements_cc_id' SERIAL,
