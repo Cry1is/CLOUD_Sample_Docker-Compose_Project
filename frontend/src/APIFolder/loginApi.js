@@ -132,8 +132,14 @@ export const getCoursebyId = async (courseID) => {
     return res.data;
 }
 
-export const getCourseNameById = async (courseID) => {
-    const res = await axios.get(`${BACKEND_ENDPOINT}/api/courses/${courseID}/name`)
+export const getCourseMetaById = async (courseID) => {
+    const res = await axios.get(`${BACKEND_ENDPOINT}/api/course_metadata/${courseID}`);
+    if (res.status !== 200) {
+        console.log("Couldn't find course");
+        return null;
+    }
+
+    return res.data;
 }
 
 export const updateCoursebyId = async (course) => {
