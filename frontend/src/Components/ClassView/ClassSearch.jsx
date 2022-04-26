@@ -68,6 +68,37 @@ export const ClassSearch = ({ pages, settings, setNavigated }) => {
             <table className="table">
                 <thead>
                     <tr>
+                        {/**{courses.length > 0
+        && <table>
+            <thead>
+                {courses.map(course => {
+                    <tr key={course.courseID}>
+                        <td>{course.className}</td>
+                        <td>{course.start_date}</td>
+                        <td>{course.end_date}</td>
+
+                        <td>
+                            <button variant="contained"
+                                className="btn btn-secondary"
+                                onClick={() => goToCourse(course)}>
+                                View Profile
+                            </button>
+                        </td>
+                        {/**TODO: button to drop course */}
+                        {ifDropShow &&
+                            <td>
+                            <button variant="contained"
+                                className="btn btn-secondary"
+                                onClick={() => removeCourse(course, currUser)}>
+                                Drop Course
+                            </button>
+                        </td>
+                        }
+                    </tr>
+                })}
+
+            </thead>
+        </table>} */}
                         <th>Username</th>
                         <th>First Name</th>
                         <th>Last Name</th>
