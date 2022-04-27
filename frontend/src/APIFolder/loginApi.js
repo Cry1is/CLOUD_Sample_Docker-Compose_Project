@@ -1,11 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 axios.defaults.withCredentials = true
-export const BACKEND_ENDPOINT = "http://≈8000";
-export const BACKEND_ENDPOINT = "http://ec2-18-188-91-71.us-east-2.compute.amazonaws.com:8000";
-export const 
-export const WS_ENDPOINT = "ws://localhost:8000";
-export const BACKEND_ENDPOINT = "http://localhost:8000";
+export const WS_ENDPOINT = "ws://ec2-18-188-91-71.us-east-2.compute.amazonaws.com:8000";
 export const BACKEND_ENDPOINT = "http://ec2-18-188-91-71.us-east-2.compute.amazonaws.com:8000";
 
 
