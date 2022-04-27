@@ -21,6 +21,7 @@
 }
 
 .height{
+    height: 20rem;
     max-height: 20rem;
     overflow-y: scroll;
 }
