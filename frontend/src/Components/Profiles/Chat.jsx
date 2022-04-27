@@ -35,14 +35,14 @@ export const Chat = (props) => {
         13: [
             { senderId: 1, content: "Hello" },
             { senderId: 13, content: "Hello, Wes" },
-            { senderId: 1, content: "How are you Dummy Thicc?" },
+            { senderId: 1, content: "How are you?" },
             { senderId: 13, content: "Doing well, yourself?" }
         ],
         2: [
-            { senderId: 1, content: "PP" },
-            { senderId: 2, content: "PP, Wes" },
-            { senderId: 1, content: "How Do PP" },
-            { senderId: 2, content: "Doing PP, yourself?" }
+            { senderId: 1, content: "Message" },
+            { senderId: 2, content: "Message back" },
+            { senderId: 1, content: "example" },
+            { senderId: 2, content: "example2" }
         ]
     });
     const [message, setMessage] = useState('')
