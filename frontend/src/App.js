@@ -23,6 +23,7 @@ import { Waitlist } from './Components/AdminView/Waitlist';
 import { getAccountbyId } from './APIFolder/loginApi';
 import { WSEventHandler } from "./client-websocket";
 import {Snackbar} from "@mui/material";
+import { Chat } from "./Components/Profiles/Chat";
 
 // React functional component
 function App() {
@@ -42,6 +43,7 @@ function App() {
     { label: 'Dashboard', route: `/` },
     { label: 'Classes', route: `/classes` },
     { label: 'Friends', route: `/users/:account_id/friends` },
+    { label: 'Chat', route: `/chat` }
   ]);
   const [basePages] = useState([
     { label: 'Info', route: `/info` },
@@ -142,6 +144,11 @@ function App() {
             settings={settings}
             setNavigated={x => setNavigated(x)} />} />
 
+          <Route path="/chat" element={<Chat
+            pages={loggedInPages}
+            settings={settings}
+            setNavigated={x => setNavigated(x)} />} />
+
           <Route path="/users" element={<UserSearch
             pages={loggedInPages}
             settings={settings}
@@ -155,18 +162,17 @@ function App() {
             settings={settings}
             setNavigated={x => setNavigated(x)} />} />
 
-
-
-
           {/* Classes loading */}
           <Route path="/classes" element={<ClassMenu
             pages={loggedInPages}
             settings={settings}
             setNavigated={x => setNavigated(x)} />} />
+
           <Route path="/classes/enrollment" element={<AddClasses
             pages={loggedInPages}
             settings={settings}
             setNavigated={x => setNavigated(x)} />} />
+
           <Route path="/classes/:course_id" element={<ClassProfile
             pages={loggedInPages}
             settings={settings}
@@ -179,7 +185,6 @@ function App() {
             setNavigated={x => setNavigated(x)} />} />
 
           <Route path="*" element={<NoPages />} />
-
 
         </Routes>
       </BrowserRouter>
