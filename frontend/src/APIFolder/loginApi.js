@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 axios.defaults.withCredentials = true
+export const WS_ENDPOINT = "ws://localhost:8000";
 export const BACKEND_ENDPOINT = "http://localhost:8000";
 
 
