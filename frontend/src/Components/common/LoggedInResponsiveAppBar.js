@@ -93,6 +93,10 @@ export const LoggedInResponsiveAppBar = ({ pages, settings, signOut, account_id,
                     <PeopleTwoToneIcon />
                     <Typography className="m-1" textAlign="center">{page.label}</Typography>
                   </MenuItem>}
+                  {(account_type === "student" || account_type === "ta") && page.route === '/chat' && <MenuItem key={page.label} component={Link} to={`/chat`} onClick={handleCloseNavMenu}>
+                    <PeopleTwoToneIcon />
+                    <Typography className="m-1" textAlign="center">{page.label}</Typography>
+                  </MenuItem>}
                   {page.route === '/classes' && <MenuItem key={page.label} component={Link} to={`/classes`} onClick={handleCloseNavMenu}>
                     <ShoppingCartIcon />
                     <Typography className="m-1" textAlign="center">{page.label}</Typography>
@@ -157,6 +161,16 @@ export const LoggedInResponsiveAppBar = ({ pages, settings, signOut, account_id,
                   key={page.label}
                   component={Link}
                   to={'/'}
+                  onClick={handleCloseNavMenu}
+                  className="btn"
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {page.label}
+                </Button>}
+                {(account_type === "student" || account_type === "ta") && page.route === '/chat' && <Button
+                  key={page.label}
+                  component={Link}
+                  to={`/chat`}
                   onClick={handleCloseNavMenu}
                   className="btn"
                   sx={{ my: 2, color: 'white', display: 'block' }}

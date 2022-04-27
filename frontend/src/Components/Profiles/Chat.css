@@ -1,0 +1,26 @@
+.sent{
+    background: rgba(0, 89, 190, 0.5);
+    float: right;
+    border-radius: 1rem;
+}
+.recieve{
+    background: rgba(170, 170, 170, 0.5);
+    float: left;
+    border-radius: 1rem;
+}
+
+.hovered:hover{
+    background: rgba(0, 45, 97, 0.5);
+}
+.rounded{
+    border-radius: 100%;
+}
+
+.special{
+    margin-top: 2.7rem;
+}
+
+.height{
+    max-height: 20rem;
+    overflow-y: scroll;
+}
