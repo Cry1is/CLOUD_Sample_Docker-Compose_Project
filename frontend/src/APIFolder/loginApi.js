@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 axios.defaults.withCredentials = true
-export const BACKEND_ENDPOINT = "http://localhost:8000";
+export const BACKEND_ENDPOINT = "ec2-18-188-91-71.us-east-2.compute.amazonaws.com:8000";
 
 
 export const registerAccount = async (credentials) =>  {
