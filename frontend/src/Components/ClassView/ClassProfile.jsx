@@ -139,8 +139,14 @@ export const ClassProfile = (props) => {
         setEditMode(false);
     }
 
-    const signOut = () => { doSignOut().then(() => navigate('/')) };
-
+    const signOut = () => {
+        console.log("Logging out");
+        logout().then(() => {
+            localStorage.setItem("currUser", "{}")
+            navigate('/');
+        });
+    }
+    
     const sendEnrollmentRequestFunc = () => {
         sendEnrollmentRequest(course.course_id, account.account_id)
         setReload(!reload)

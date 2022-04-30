@@ -44,7 +44,13 @@ export const Waitlist = (props) => {
     }
 
     // Component Methods
-    const signOut = () => { doSignOut().then(() => navigate('/')) };
+    const signOut = () => {
+        console.log("Logging out");
+        logout().then(() => {
+            localStorage.setItem("currUser", "{}")
+            navigate('/');
+        });
+    }
     const goToProfile = profile => {
         navigate(`users/${profile.account_id}`);
     }

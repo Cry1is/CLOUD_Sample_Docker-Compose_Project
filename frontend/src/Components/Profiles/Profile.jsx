@@ -267,7 +267,13 @@ export const Profile = (props) => {
         setEditMode(false);
     }
 
-    const signOut = () => { doSignOut().then(() => navigate('/')) };
+    const signOut = () => {
+        console.log("Logging out");
+        logout().then(() => {
+            localStorage.setItem("currUser", "{}")
+            navigate('/');
+        });
+    }
 
 
     const sendFriendRequestFunc = () => {
