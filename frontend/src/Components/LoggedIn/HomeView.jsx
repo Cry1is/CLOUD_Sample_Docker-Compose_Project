@@ -65,12 +65,19 @@ export const HomeView = (props) => {
 
 
     // Component Methods
-    const signOut = () => { doSignOut().then(() => navigate('/')) };
+    const signOut = () => {
+        console.log("Logging out");
+        logout().then(() => {
+            localStorage.setItem("currUser", "{}")
+            navigate('/');
+        });
+    }
 
     const removeNotification = (id) => {
         console.log("splicing and deleting")
-        deleteNotification(id);
-        setReload(!reload);
+        deleteNotification(id).then(() => {
+            setReload(!reload);
+        })
     }
     const removeAllNotification = () => {
         for (const i in notifications) {

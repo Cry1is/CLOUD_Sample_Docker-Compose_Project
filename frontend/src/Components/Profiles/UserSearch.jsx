@@ -123,7 +123,13 @@ export const UserSearch = ({ pages, settings, setNavigated }) => {
     }
 
 
-    const signOut = () => { doSignOut().then(() => navigate('/')) };
+    const signOut = () => {
+        console.log("Logging out");
+        logout().then(() => {
+            localStorage.setItem("currUser", "{}")
+            navigate('/');
+        });
+    }
 
     const displayUser = (profile) => {
         if (profile.status === 3) {
